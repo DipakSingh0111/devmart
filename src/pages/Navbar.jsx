@@ -21,11 +21,10 @@ const Navbar = () => {
     if (e.key === "Enter" && search.trim() !== "") {
       navigate(`/search/${search}`);
       setSearch("");
-      setMenuOpen(false); // close menu on search
+      setMenuOpen(false);
     }
   };
 
-  // close menu helper
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -49,7 +48,7 @@ const Navbar = () => {
           <Link to="/kids">Kids</Link>
         </nav>
 
-        {/* Right Section */}
+        {/* Desktop Right */}
         <div className="hidden md:flex items-center gap-5">
 
           {/* Search */}
@@ -91,19 +90,28 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile Menu Icon */}
-        <div
-          className="md:hidden text-white text-2xl cursor-pointer"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <FaTimes /> : <FaBars />}
+        {/* ✅ Mobile Right (Cart + Menu) */}
+        <div className="md:hidden flex items-center gap-4 text-white text-2xl">
+
+          {/* Cart always visible */}
+          <Link to="/cart" className="relative">
+            <FaShoppingCart />
+            <span className="absolute -top-2 -right-2 text-xs bg-pink-500 text-white px-1.5 rounded-full">
+              {cart.length}
+            </span>
+          </Link>
+
+          {/* Menu toggle */}
+          <div onClick={() => setMenuOpen(!menuOpen)} className="cursor-pointer">
+            {menuOpen ? <FaTimes /> : <FaBars />}
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       <div
         className={`md:hidden bg-black border-t border-gray-800 transition-all duration-300 overflow-hidden 
-        ${menuOpen ? "max-h-[400px]" : "max-h-0"}`}
+        ${menuOpen ? "max-h-[450px]" : "max-h-0"}`}
       >
         <div className="flex flex-col px-6 py-5 gap-4 text-gray-300">
 
@@ -122,6 +130,22 @@ const Navbar = () => {
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleSearch}
           />
+
+          {/* ✅ Center Icons */}
+          <div className="flex justify-center items-center gap-6 mt-2">
+
+            <Link to="/wishlist" onClick={closeMenu} className="relative">
+              <FaHeart className="text-xl" />
+            </Link>
+
+            <Link to="/cart" onClick={closeMenu} className="relative">
+              <FaShoppingCart className="text-xl" />
+              <span className="absolute -top-2 -right-2 text-xs bg-pink-500 text-white px-1.5 rounded-full">
+                {cart.length}
+              </span>
+            </Link>
+
+          </div>
 
           {/* Register */}
           <Link
