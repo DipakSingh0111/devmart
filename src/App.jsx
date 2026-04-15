@@ -10,6 +10,8 @@ import Womens from "./pages/Womens";
 import LatestCollections from "./pages/LatestCollections";
 import Kids from "./pages/kids";
 import SearchPage from "./components/SearchPage";
+import Cart from "./pages/Cart";
+import PlaceOrder from "./components/PlaceOrder";
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
           <Route path="latest" element={<LatestCollections/>}/>
           <Route path="kids" element={<Kids/>}/>
           <Route path="/search/:query" element={<SearchPage />} />
+          <Route path="/cart" element={<Cart/>}/>
+          <Route path="/place-order" element={<PlaceOrder/>}/>
         </Route>
       </Routes>
     </>
