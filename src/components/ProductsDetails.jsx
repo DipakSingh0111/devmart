@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProductList from "../pages/ProductList"
+import ProductList from "../pages/ProductList";
 import { API_MAP } from "../utils/apiData";
 import axios from "axios";
 
@@ -16,72 +16,65 @@ const ProductDetail = () => {
 
   const sizes = ["S", "M", "L", "XL"];
 
-  // ✅ Only clothing categories
-  const clothingCategories = [
-    "mens-shirts",
-    "womens-dresses",
-    "tops",
-  ];
+  // ✅ Clothing categories
+  const clothingCategories = ["mens-shirts", "womens-dresses", "tops"];
 
-  // 🔥 Get product
- const getProduct = async () => {
-  try {
-    const res = await axios.get(`${API_MAP.singleProduct}/${id}`);
-    const data = res.data;
-
-    setProduct(data);
-    setActiveImg(data?.images?.[0]);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-  // 🔥 Get related products
-  const getRelatedProducts = async (category, currentId) => {
+  // 🔥 Get single product
+  const getProduct = async () => {
     try {
-      const res = await fetch(
-        `https://dummyjson.com/products/category/${category}`
-      );
-      const data = await res.json();
+      const res = await axios.get(`${API_MAP.singleProduct}/${id}`);
+      const data = res.data;
 
-      const filtered = data.products.filter(
-        (item) => item.id !== Number(currentId)
-      );
-
-      setRelated(filtered.slice(0, 8)); // limit 8
+      setProduct(data);
+      setActiveImg(data?.images?.[0]);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // ✅ 1. Load product
+  // 🔥 Get related products
+  const getRelatedProducts = async (category, currentId) => {
+    try {
+      const res = await fetch(
+        `https://dummyjson.com/products/category/${category}`,
+      );
+      const data = await res.json();
+
+      const filtered = data.products.filter(
+        (item) => item.id !== Number(currentId),
+      );
+
+      setRelated(filtered.slice(0, 8));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ✅ Load product
   useEffect(() => {
     getProduct();
     window.scrollTo(0, 0);
   }, [id]);
 
-  // ✅ 2. Load related AFTER product
+  // ✅ Load related
   useEffect(() => {
     if (product?.category) {
       getRelatedProducts(product.category, id);
     }
   }, [product]);
 
-  if (!product)
-    return <h1 className="text-center mt-10">Loading...</h1>;
+  if (!product) return <h1 className="text-center mt-10">Loading...</h1>;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 mt-16">
-      
-      {/* 🔥 Breadcrumb */}
+      {/* Breadcrumb */}
       <p className="text-sm text-gray-500">
         Home / Products / {product.category} /{" "}
         <span className="text-indigo-500">{product.title}</span>
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-5">
-        
-        {/* 🔥 LEFT IMAGE */}
+        {/* LEFT IMAGE */}
         <div className="flex gap-4">
           <div className="flex flex-col gap-3">
             {product?.images?.slice(0, 4).map((img, i) => (
@@ -105,16 +98,13 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* 🔥 RIGHT DETAILS */}
+        {/* RIGHT DETAILS */}
         <div>
           {/* Title + Fav */}
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold">{product.title}</h1>
 
-            <button
-              onClick={() => setIsFav(!isFav)}
-              className="text-2xl"
-            >
+            <button onClick={() => setIsFav(!isFav)} className="text-2xl">
               {isFav ? "❤️" : "🤍"}
             </button>
           </div>
@@ -126,29 +116,23 @@ const ProductDetail = () => {
                 {i < Math.round(product.rating) ? "★" : "☆"}
               </span>
             ))}
-            <span className="ml-2 text-gray-500">
-              ({product.rating})
-            </span>
+            <span className="ml-2 text-gray-500">({product.rating})</span>
           </div>
 
           {/* Price */}
           <p className="text-3xl font-bold text-green-600 mt-4">
-            ${product.price}
+            ₹{product.price}
           </p>
 
           {/* Stock */}
           <p className="mt-2 text-sm text-green-600 font-medium">
-            {product.stock > 0
-              ? "In Stock ✅"
-              : "Out of Stock ❌"}
+            {product.stock > 0 ? "In Stock ✅" : "Out of Stock ❌"}
           </p>
 
           {/* Description */}
-          <p className="mt-4 text-gray-600">
-            {product.description}
-          </p>
+          <p className="mt-4 text-gray-600">{product.description}</p>
 
-          {/* 🔥 SIZE ONLY FOR CLOTHING */}
+          {/* SIZE (only clothing) */}
           {clothingCategories.includes(product.category) && (
             <div className="mt-6">
               <p className="font-medium mb-2">Select Size:</p>
@@ -158,9 +142,7 @@ const ProductDetail = () => {
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={`px-4 py-2 border rounded ${
-                      selectedSize === size
-                        ? "bg-black text-white"
-                        : "bg-white"
+                      selectedSize === size ? "bg-black text-white" : "bg-white"
                     }`}
                   >
                     {size}
@@ -170,7 +152,7 @@ const ProductDetail = () => {
             </div>
           )}
 
-          {/* 🔥 QUANTITY */}
+          {/* QUANTITY */}
           <div className="mt-6">
             <p className="font-medium mb-2">Quantity:</p>
             <div className="flex items-center gap-3">
@@ -180,7 +162,9 @@ const ProductDetail = () => {
               >
                 -
               </button>
+
               <span className="text-lg">{qty}</span>
+
               <button
                 onClick={() => setQty(qty + 1)}
                 className="px-3 py-1 bg-gray-200 rounded"
@@ -190,7 +174,7 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* 🔥 BUTTONS */}
+          {/* BUTTONS */}
           <div className="flex gap-4 mt-8">
             <button className="bg-yellow-500 text-white px-6 py-3 rounded-lg w-full">
               Add to Cart
@@ -203,15 +187,11 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* 🔥 RELATED PRODUCTS */}
-      <h2 className="text-2xl font-bold mt-12 mb-5">
-        Related Products 🔥
-      </h2>
+      {/* RELATED PRODUCTS */}
+      <h2 className="text-2xl font-bold mt-12 mb-5">Related Products 🔥</h2>
 
       {related.length === 0 ? (
-        <p className="text-center text-gray-500">
-          No related products found
-        </p>
+        <p className="text-center text-gray-500">No related products found</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {related.map((item) => (
