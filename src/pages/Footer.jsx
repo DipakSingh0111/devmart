@@ -8,7 +8,7 @@ const Footer = () => {
         {/* Logo + About */}
         <div>
           <h1 className="text-2xl font-bold text-white mb-4">
-            Shop<span className="text-pink-500">iva</span>
+            Dev<span className="text-pink-500">mart</span>
           </h1>
           <p className="text-sm leading-6">
             Your one-stop destination for trendy fashion and quality products.

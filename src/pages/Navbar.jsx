@@ -33,9 +33,9 @@ const Navbar = () => {
 
         {/* Logo */}
         <Link to="/" className="text-xl font-bold tracking-wide">
-          <span className="text-white">Sho</span>
+          <span className="text-white">Dev</span>
           <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
-            piva
+            mart
           </span>
         </Link>
 
