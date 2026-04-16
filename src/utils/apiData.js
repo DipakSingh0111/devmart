@@ -4,5 +4,6 @@ export const API_MAP = {
   women: "https://dummyjson.com/products/category/womens-dresses",
   men: "https://dummyjson.com/products/category/mens-shirts",
   kids:"https://dummyjson.com/products/category/tops",
-  singleProduct: "https://dummyjson.com/products"
+  singleProduct: "https://dummyjson.com/products",
+  auth:"http://localhost:8080"
 };

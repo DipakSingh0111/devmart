@@ -1,71 +1,110 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { FaRegEye, FaEyeSlash } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { API_MAP } from "../utils/apiData";
 
 const Register = () => {
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    mobile: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    if (!form.fullName || !form.email || !form.password || !form.mobile) {
+      return toast.error("All fields are required");
+    }
+
+    try {
+      await axios.post(`${API_MAP.auth}/api/auth/signup`, form, {
+        withCredentials: true,
+      });
+
+      toast.success("Account created 🎉");
+      navigate("/login");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error");
+    }
+  };
+
   return (
-    <div
-      className="fixed top-[40px] left-0 w-full h-screen flex justify-center items-center 
-        bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-500 bg-[length:400%_400%] animate-[gradientMove_10s_ease_infinite]"
-    >
-      <form
-        className="w-[350px] max-w-[90%] p-[40px_30px] rounded-2xl 
-            bg-white/10 backdrop-blur-xl shadow-2xl text-center text-white"
-      >
-        <h1 className="text-[26px] mb-1 font-semibold">Welcome Back 👋</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-white px-4">
+      <div className="w-full max-w-md bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-8 border">
+        <h2 className="text-3xl font-bold text-center mb-2">
+          Create Account 🚀
+        </h2>
+        <p className="text-gray-500 text-center mb-6">
+          Start your shopping journey
+        </p>
 
-        <p className="text-sm mb-6 opacity-85">Register to continue</p>
-
-        {/* Username */}
-        <div className="text-left mb-5">
-          <label className="text-[13px] block mb-1">Username</label>
+        <form onSubmit={handleRegister} className="space-y-4">
           <input
-            type="text"
-            placeholder="Enter your username"
-            className="w-full p-3 rounded-lg outline-none text-black focus:ring-2 focus:ring-indigo-500"
+            name="fullName"
+            placeholder="Full Name"
+            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+            onChange={handleChange}
           />
-        </div>
 
-        {/* Email */}
-        <div className="text-left mb-5">
-          <label className="text-[13px] block mb-1">Email</label>
           <input
-            type="email"
-            placeholder="Enter your email"
-            className="w-full p-3 rounded-lg outline-none text-black focus:ring-2 focus:ring-indigo-500"
+            name="email"
+            placeholder="Email"
+            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+            onChange={handleChange}
           />
-        </div>
 
-        {/* Password */}
-        <div className="text-left mb-5">
-          <label className="text-[13px] block mb-1">Password</label>
           <input
-            type="password"
-            placeholder="Enter your password"
-            className="w-full p-3 rounded-lg outline-none text-black focus:ring-2 focus:ring-indigo-500"
+            name="mobile"
+            placeholder="Mobile Number"
+            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+            onChange={handleChange}
           />
-        </div>
 
-        {/* Button */}
-        <button
-          type="submit"
-          className="w-full p-3 rounded-lg bg-indigo-500 font-semibold 
-                    hover:bg-indigo-600 transition-all duration-300 hover:-translate-y-1"
-        >
-          Register
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+              onChange={handleChange}
+            />
+            <span
+              className="absolute right-4 top-3 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaRegEye />}
+            </span>
+          </div>
+
+          <button className="w-full cursor-pointer bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold">
+            Register
+          </button>
+        </form>
+
+        <button className="w-full cursor-pointer mt-4 flex items-center justify-center gap-2 border py-3 rounded-lg hover:bg-gray-100">
+          <FcGoogle />
+          Continue with Google
         </button>
 
-        {/* Footer */}
-        <p className="mt-4 text-sm">
-          Do have an account?{" "}
-          <span
-            onClick={() => navigate("/login")}
-            className="text-indigo-200 cursor-pointer hover:underline"
-          >
+        <p className="text-center mt-6 text-sm cursor-pointer">
+          Already have an account?{" "}
+          <Link to="/login" className="text-orange-500 cursor-pointer font-medium">
             Login
-          </span>
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 };
