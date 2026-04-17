@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProductList from "../pages/ProductList";
 import { API_MAP } from "../utils/apiData";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/cartSlice";
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
@@ -16,10 +20,10 @@ const ProductDetail = () => {
 
   const sizes = ["S", "M", "L", "XL"];
 
-  // ✅ Clothing categories
+  // Clothing categories
   const clothingCategories = ["mens-shirts", "womens-dresses", "tops"];
 
-  // 🔥 Get single product
+  // Get single product
   const getProduct = async () => {
     try {
       const res = await axios.get(`${API_MAP.singleProduct}/${id}`);
@@ -32,7 +36,28 @@ const ProductDetail = () => {
     }
   };
 
-  // 🔥 Get related products
+  // AddTOCart handler
+  const addToCartHandler = () =>{
+    const cartObj = {
+      price: product.price,
+      title: product.title,
+      image: product.thumbnail,
+      qty,
+      description: product.description,
+      id: product.id,
+    };
+    dispatch(addToCart({cartObj}));
+  }
+
+  // Buy now handler
+  const buyNowhandler = (e) =>{
+    e.stopPropagation();
+    addToCartHandler();
+    navigate("/cart");
+
+  }
+
+  // Get related products
   const getRelatedProducts = async (category, currentId) => {
     try {
       const res = await fetch(
@@ -50,13 +75,13 @@ const ProductDetail = () => {
     }
   };
 
-  // ✅ Load product
+  // Load product
   useEffect(() => {
     getProduct();
     window.scrollTo(0, 0);
   }, [id]);
 
-  // ✅ Load related
+  // Load related
   useEffect(() => {
     if (product?.category) {
       getRelatedProducts(product.category, id);
@@ -176,11 +201,11 @@ const ProductDetail = () => {
 
           {/* BUTTONS */}
           <div className="flex gap-4 mt-8">
-            <button className="bg-yellow-500 text-white px-6 py-3 rounded-lg w-full">
+            <button onClick={addToCartHandler} className="bg-yellow-500 cursor-pointer text-white px-6 py-3 rounded-lg w-full">
               Add to Cart
             </button>
 
-            <button className="bg-orange-500 text-white px-6 py-3 rounded-lg w-full">
+            <button onClick={buyNowhandler} className="bg-orange-500 cursor-pointer text-white px-6 py-3 rounded-lg w-full">
               Buy Now
             </button>
           </div>

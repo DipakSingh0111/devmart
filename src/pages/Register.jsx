@@ -15,6 +15,7 @@ const Register = () => {
     email: "",
     password: "",
     mobile: "",
+    role: "user", // ✅ default role
   });
 
   const handleChange = (e) => {
@@ -24,7 +25,12 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!form.fullName || !form.email || !form.password || !form.mobile) {
+    if (
+      !form.fullName ||
+      !form.email ||
+      !form.password ||
+      !form.mobile
+    ) {
       return toast.error("All fields are required");
     }
 
@@ -43,6 +49,7 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-white px-4">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-8 border">
+        
         <h2 className="text-3xl font-bold text-center mb-2">
           Create Account 🚀
         </h2>
@@ -51,6 +58,8 @@ const Register = () => {
         </p>
 
         <form onSubmit={handleRegister} className="space-y-4">
+
+          {/* Name */}
           <input
             name="fullName"
             placeholder="Full Name"
@@ -58,6 +67,7 @@ const Register = () => {
             onChange={handleChange}
           />
 
+          {/* Email */}
           <input
             name="email"
             placeholder="Email"
@@ -65,6 +75,7 @@ const Register = () => {
             onChange={handleChange}
           />
 
+          {/* Mobile */}
           <input
             name="mobile"
             placeholder="Mobile Number"
@@ -72,6 +83,7 @@ const Register = () => {
             onChange={handleChange}
           />
 
+          {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -88,19 +100,47 @@ const Register = () => {
             </span>
           </div>
 
+          {/* 🔥 Role Selection */}
+          <div className="flex gap-6 mt-2">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="role"
+                value="user"
+                checked={form.role === "user"}
+                onChange={handleChange}
+              />
+              User
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="role"
+                value="admin"
+                checked={form.role === "admin"}
+                onChange={handleChange}
+              />
+              Admin
+            </label>
+          </div>
+
+          {/* Button */}
           <button className="w-full cursor-pointer bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold">
             Register
           </button>
         </form>
 
+        {/* Google */}
         <button className="w-full cursor-pointer mt-4 flex items-center justify-center gap-2 border py-3 rounded-lg hover:bg-gray-100">
           <FcGoogle />
           Continue with Google
         </button>
 
-        <p className="text-center mt-6 text-sm cursor-pointer">
+        {/* Login */}
+        <p className="text-center mt-6 text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="text-orange-500 cursor-pointer font-medium">
+          <Link to="/login" className="text-orange-500 font-medium">
             Login
           </Link>
         </p>

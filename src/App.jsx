@@ -14,6 +14,7 @@ import Cart from "./pages/Cart";
 import PlaceOrder from "./components/PlaceOrder";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserProfile from "./components/UserProfile";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="latest" element={<LatestCollections />} />
           <Route path="kids" element={<Kids />} />
           <Route path="/search/:query" element={<SearchPage />} />
+          <Route path="/profile" element={<UserProfile />} />
 
           {/* 🔒 Protected */}
           <Route

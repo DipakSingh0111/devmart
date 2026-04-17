@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaShoppingCart,
@@ -6,16 +6,22 @@ import {
   FaBars,
   FaTimes,
   FaHeart,
+  FaUserCircle,
 } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "../redux/cartSlice";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [user, setUser] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef();
 
   const cart = useSelector((state) => state.cart.cart);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // 🔥 Load user
   const loadUser = () => {
@@ -25,8 +31,6 @@ const Navbar = () => {
 
   useEffect(() => {
     loadUser();
-
-    // 🔥 listen login/logout changes
     window.addEventListener("authChange", loadUser);
 
     return () => {
@@ -34,9 +38,28 @@ const Navbar = () => {
     };
   }, []);
 
+  // 🔥 close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   // 🔥 logout
   const handleLogout = () => {
     localStorage.removeItem("user");
+    dispatch(clearCart());
+
     window.dispatchEvent(new Event("authChange"));
     navigate("/login");
   };
@@ -52,7 +75,6 @@ const Navbar = () => {
 
   const closeMenu = () => setMenuOpen(false);
 
-  // 🔥 SAFE NAME HANDLING (MAIN FIX)
   const displayName =
     user?.newUser?.fullName || user?.user?.fullName || user?.fullName || "User";
 
@@ -101,23 +123,65 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* 🔥 AUTH SECTION */}
+          {/* 🔥 AUTH DROPDOWN */}
           {user ? (
-            <div className="flex items-center gap-3">
-              {/* NAME FIXED */}
-              <span className="text-white text-sm">{displayName}</span>
-
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm"
+            <div className="relative" ref={dropdownRef}>
+              {/* Profile Icon */}
+              <div
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="cursor-pointer"
               >
-                Logout
-              </button>
+                <FaUserCircle className="text-2xl text-white" />
+              </div>
+
+              {/* Dropdown */}
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-3 w-52 bg-white text-black rounded-xl shadow-lg overflow-hidden z-50">
+                  {/* Name */}
+                  <div className="px-4 py-3 border-b text-sm font-semibold">
+                    {displayName}
+                  </div>
+
+                  <Link
+                    to="/profile"
+                    onClick={() => setDropdownOpen(false)}
+                    className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
+                    👤 My Profile
+                  </Link>
+
+                  <Link
+                    to="/orders"
+                    onClick={() => setDropdownOpen(false)}
+                    className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
+                    📦 My Orders
+                  </Link>
+
+                  <Link
+                    to="/wishlist"
+                    onClick={() => setDropdownOpen(false)}
+                    className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
+                    ❤️ Wishlist
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-500 text-sm"
+                  >
+                    🚪 Logout
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <Link
               to="/register"
-              className="bg-gradient-to-r cursor-pointer from-pink-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm"
+              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm"
             >
               Register
             </Link>
@@ -170,17 +234,15 @@ const Navbar = () => {
             className="bg-gray-900 text-white px-3 py-2 rounded-full"
           />
 
-          {/* AUTH MOBILE */}
           {user ? (
             <>
               <p className="text-white text-center">{displayName}</p>
-
               <button
                 onClick={() => {
                   handleLogout();
                   closeMenu();
                 }}
-                className="bg-red-500 cursor-pointer text-white py-2 rounded-full"
+                className="bg-red-500 text-white py-2 rounded-full"
               >
                 Logout
               </button>
@@ -189,7 +251,7 @@ const Navbar = () => {
             <Link
               to="/register"
               onClick={closeMenu}
-              className="bg-gradient-to-r cursor-pointer from-pink-500 to-purple-500 text-white py-2 rounded-full text-center"
+              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-2 rounded-full text-center"
             >
               Register
             </Link>
