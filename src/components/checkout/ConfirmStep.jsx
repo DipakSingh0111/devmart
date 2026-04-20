@@ -26,7 +26,93 @@ const ConfirmStep = ({ form, paymentMethod, onBack }) => {
     };
 
     dispatch(placeOrder(orderData));
-    toast.success("🎉 Order placed successfully!");
+
+    toast.custom(
+      (t) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            background: "#ffffff",
+            border: "1px solid #bbf7d0",
+            borderRadius: "16px",
+            padding: "14px 20px",
+            boxShadow: "0 8px 24px rgba(34,197,94,0.12)",
+            minWidth: "280px",
+            transition: "all 0.3s ease",
+            opacity: t.visible ? 1 : 0,
+            transform: t.visible ? "translateY(0)" : "translateY(12px)",
+          }}
+        >
+          {/* Animated Circle + Checkmark */}
+          <div style={{ width: 44, height: 44, flexShrink: 0 }}>
+            <svg viewBox="0 0 40 40" width="44" height="44" overflow="visible">
+              {/* Green filled background circle */}
+              <circle cx="20" cy="20" r="18" fill="#dcfce7" />
+
+              {/* Animated border circle */}
+              <circle
+                cx="20"
+                cy="20"
+                r="18"
+                fill="none"
+                stroke="#22c55e"
+                strokeWidth="2.5"
+                strokeDasharray="113"
+                strokeDashoffset={t.visible ? "0" : "113"}
+                style={{
+                  transform: "rotate(-90deg)",
+                  transformOrigin: "center",
+                  transition:
+                    "stroke-dashoffset 0.55s cubic-bezier(0.4,0,0.2,1) 0.15s",
+                }}
+              />
+
+              {/* Animated checkmark */}
+              <polyline
+                points="11,20 17.5,27 29,13"
+                fill="none"
+                stroke="#16a34a"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray="30"
+                strokeDashoffset={t.visible ? "0" : "30"}
+                style={{
+                  transition: "stroke-dashoffset 0.35s ease 0.65s",
+                }}
+              />
+            </svg>
+          </div>
+
+          {/* Text */}
+          <div>
+            <p
+              style={{
+                margin: 0,
+                fontSize: "14px",
+                fontWeight: "700",
+                color: "#111827",
+              }}
+            >
+              Order placed successfully!
+            </p>
+            <p
+              style={{
+                margin: "4px 0 0",
+                fontSize: "12px",
+                color: "#6b7280",
+              }}
+            >
+              We'll ship your items soon 🚚
+            </p>
+          </div>
+        </div>
+      ),
+      { duration: 3500 },
+    );
+
     navigate("/my-orders");
   };
 

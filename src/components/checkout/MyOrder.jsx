@@ -35,7 +35,7 @@ const MyOrders = () => {
               </div>
 
               <div className="p-6 md:p-8 lg:p-10">
-                {/* ── CLEAN TRACKING SYSTEM ── */}
+                {/* CLEAN TRACKING SYSTEM */}
                 <div className="mb-14 relative px-4">
                   <div className="max-w-3xl mx-auto">
                     <div className="relative flex justify-between items-center">
@@ -63,7 +63,7 @@ const MyOrders = () => {
                   </div>
                 </div>
 
-                {/* ── UPDATED CONTENT GRID ── */}
+                {/* UPDATED CONTENT GRID */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mt-12">
                   
                   {/* Left: Product List (Improved) */}

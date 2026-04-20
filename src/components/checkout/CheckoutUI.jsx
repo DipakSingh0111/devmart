@@ -1,6 +1,6 @@
 import React from "react";
 
-// ─── Reusable Input Field ─────────────────────────────────────────
+// Reusable Input Field
 export const Field = ({ label, icon, error, ...props }) => (
   <div className="flex flex-col gap-1">
     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -25,7 +25,7 @@ export const Field = ({ label, icon, error, ...props }) => (
   </div>
 );
 
-// ─── Payment Option Card ──────────────────────────────────────────
+// Payment Option Card
 export const PayOption = ({ value, selected, onChange, icon, title, subtitle }) => (
   <label
     className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200

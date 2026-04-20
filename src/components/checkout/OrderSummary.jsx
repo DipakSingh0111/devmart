@@ -9,7 +9,7 @@ const OrderSummary = ({ onPriceCalculated }) => { // 👈 Prop add kiya
 
   const isPlaceOrderPage = location.pathname === "/place-order";
 
-  /* ── Calculations ── */
+  /* Calculations */
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const originalTotal = cart.reduce((sum, item) => sum + Math.floor(item.price * 1.3) * item.qty, 0);
   const saved = originalTotal - subtotal;
