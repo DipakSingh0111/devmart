@@ -8,14 +8,16 @@ import { API_MAP } from "../utils/apiData";
 
 const Register = () => {
   const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     fullName: "",
     email: "",
     password: "",
     mobile: "",
-    role: "user", // ✅ default role
+    // ✅ Role yahan nahi hai — backend hardcode karta hai "user"
+    // Admin sirf /admin/create route se banega (protected)
   });
 
   const handleChange = (e) => {
@@ -25,31 +27,38 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (
-      !form.fullName ||
-      !form.email ||
-      !form.password ||
-      !form.mobile
-    ) {
+    if (!form.fullName || !form.email || !form.password || !form.mobile) {
       return toast.error("All fields are required");
     }
 
     try {
-      await axios.post(`${API_MAP.auth}/api/auth/signup`, form, {
+      setLoading(true);
+
+      const res = await axios.post(`${API_MAP.auth}/api/auth/signup`, form, {
         withCredentials: true,
       });
 
+      // ✅ Backend se role aata hai response mein
+      const role = res.data.user?.role;
+
       toast.success("Account created 🎉");
-      navigate("/login");
+
+      // ✅ ROLE-BASED REDIRECT
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/"); // Shopping page
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error");
+      toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-white px-4">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-8 border">
-        
         <h2 className="text-3xl font-bold text-center mb-2">
           Create Account 🚀
         </h2>
@@ -58,28 +67,32 @@ const Register = () => {
         </p>
 
         <form onSubmit={handleRegister} className="space-y-4">
-
           {/* Name */}
           <input
             name="fullName"
             placeholder="Full Name"
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+            value={form.fullName}
+            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
             onChange={handleChange}
           />
 
           {/* Email */}
           <input
             name="email"
+            type="email"
             placeholder="Email"
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+            value={form.email}
+            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
             onChange={handleChange}
           />
 
           {/* Mobile */}
           <input
             name="mobile"
+            type="tel"
             placeholder="Mobile Number"
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+            value={form.mobile}
+            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
             onChange={handleChange}
           />
 
@@ -89,58 +102,47 @@ const Register = () => {
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400"
+              value={form.password}
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
               onChange={handleChange}
             />
             <span
-              className="absolute right-4 top-3 cursor-pointer"
+              className="absolute right-4 top-3.5 cursor-pointer text-gray-500"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash /> : <FaRegEye />}
             </span>
           </div>
 
-          {/* 🔥 Role Selection */}
-          <div className="flex gap-6 mt-2">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                value="user"
-                checked={form.role === "user"}
-                onChange={handleChange}
-              />
-              User
-            </label>
+          {/* ❌ Radio buttons HATA DIYE — security reason
+              Backend automatically role "user" set karta hai
+              Admin sirf protected route se banega */}
 
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                value="admin"
-                checked={form.role === "admin"}
-                onChange={handleChange}
-              />
-              Admin
-            </label>
-          </div>
-
-          {/* Button */}
-          <button className="w-full cursor-pointer bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold">
-            Register
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full cursor-pointer bg-orange-500 hover:bg-orange-600 
+                       disabled:bg-orange-300 disabled:cursor-not-allowed
+                       text-white py-3 rounded-lg font-semibold transition-colors"
+          >
+            {loading ? "Creating Account..." : "Register"}
           </button>
         </form>
 
         {/* Google */}
-        <button className="w-full cursor-pointer mt-4 flex items-center justify-center gap-2 border py-3 rounded-lg hover:bg-gray-100">
+        <button className="w-full cursor-pointer mt-4 flex items-center justify-center gap-2 border py-3 rounded-lg hover:bg-gray-100 transition-colors">
           <FcGoogle />
           Continue with Google
         </button>
 
-        {/* Login */}
-        <p className="text-center mt-6 text-sm">
+        {/* Login Link */}
+        <p className="text-center mt-6 text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-orange-500 font-medium">
+          <Link
+            to="/login"
+            className="text-orange-500 font-medium hover:underline"
+          >
             Login
           </Link>
         </p>

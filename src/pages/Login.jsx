@@ -10,10 +10,10 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔥 redirect path (cart, checkout etc)
   const from = location.state?.from?.pathname || "/";
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // ✅ loading add kiya
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -25,24 +25,45 @@ const Login = () => {
     }
 
     try {
+      setLoading(true);
+
       const res = await axios.post(
         `${API_MAP.auth}/api/auth/signin`,
         { email, password },
         { withCredentials: true },
       );
 
-      // 🔥 save user
-      localStorage.setItem("user", JSON.stringify(res.data));
+      const { user, token } = res.data;
 
-      // 🔥 navbar update trigger
+      // Token aur user info save karo
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Navbar update ke liye event
       window.dispatchEvent(new Event("authChange"));
 
       toast.success("Login Successfully 🚀");
 
-      // 🔥 redirect back
-      navigate(from, { replace: true });
+      // ROLE BASED REDIRECT
+      // Admin → Dashboard, User → jahan se aaya tha ya home
+      if (user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
+      // Specific error messages
+      const status = error.response?.status;
+      if (status === 400) {
+        toast.error("Email ya password galat hai");
+      } else if (status === 404) {
+        toast.error("Account nahi mila — pehle register karo");
+      } else {
+        toast.error(error.response?.data?.message || "Login failed");
+      }
+    } finally {
+      setLoading(false); // hamesha reset hoga
     }
   };
 
@@ -50,12 +71,10 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-white px-4">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-8 border">
         <h2 className="text-3xl font-bold text-center mb-2">Welcome Back 👋</h2>
-
-        <p className="text-gray-500 cursor-pointer text-center mb-6">
+        <p className="text-gray-500 text-center mb-6">
           Login to continue shopping
         </p>
 
-        {/* FORM */}
         <form onSubmit={handleLogin} className="space-y-4">
           {/* Email */}
           <input
@@ -75,29 +94,31 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-3 cursor-pointer text-gray-500"
+              className="absolute right-4 top-3.5 cursor-pointer text-gray-500"
             >
               {showPassword ? <FaEyeSlash /> : <FaRegEye />}
             </span>
           </div>
 
-          {/* Forgot */}
+          {/* Forgot Password */}
           <div
-            className="text-right text-sm cursor-pointer text-orange-500 cursor-pointer"
+            className="text-right text-sm text-orange-500 cursor-pointer hover:underline"
             onClick={() => navigate("/forgot-password")}
           >
             Forgot Password?
           </div>
 
-          {/* Button */}
+          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-orange-500 cursor-pointer hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition"
+            disabled={loading}
+            className="w-full bg-orange-500 hover:bg-orange-600 
+                       disabled:bg-orange-300 disabled:cursor-not-allowed
+                       text-white py-3 rounded-lg font-semibold transition-colors"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
@@ -109,15 +130,18 @@ const Login = () => {
         </div>
 
         {/* Google */}
-        <button className="w-full cursor-pointer flex items-center justify-center gap-2 border py-3 rounded-lg hover:bg-gray-100 transition">
+        <button className="w-full flex items-center justify-center gap-2 border py-3 rounded-lg hover:bg-gray-100 transition-colors">
           <FcGoogle size={20} />
           Continue with Google
         </button>
 
-        {/* Register */}
-        <p className="text-center mt-6 text-sm cursor-pointer">
-          Don’t have an account?{" "}
-          <Link to="/register" className="text-orange-500 cursor-pointer font-medium">
+        {/* Register Link */}
+        <p className="text-center mt-6 text-sm text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-orange-500 font-medium hover:underline"
+          >
             Register
           </Link>
         </p>

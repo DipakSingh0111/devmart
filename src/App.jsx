@@ -30,7 +30,7 @@ const App = () => {
           <Route path="latest" element={<LatestCollections />} />
           <Route path="kids" element={<Kids />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/my-orders" element={<MyOrders/>}/>
+          <Route path="/my-orders" element={<MyOrders />} />
 
           {/* 🔒 Protected  */}
           <Route
