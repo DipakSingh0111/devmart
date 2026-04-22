@@ -5,6 +5,6 @@ export const API_MAP = {
   men: "https://dummyjson.com/products/category/mens-shirts",
   kids: "https://dummyjson.com/products/category/tops",
   singleProduct: "https://dummyjson.com/products",
-  // auth: "https://devmart-backend.vercel.app",
-  auth: "http://localhost:8080",
+  auth: "https://devmart-backend.vercel.app",
+  // auth: "http://localhost:8080",
 };
