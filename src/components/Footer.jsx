@@ -70,7 +70,7 @@ const Footer = () => {
 
       {/* Bottom */}
       <div className="border-t border-gray-700 mt-10 pt-6 text-center text-sm">
-        © {new Date().getFullYear()} Shopiva. All rights reserved.
+        © {new Date().getFullYear()} Devmart. All rights reserved.
       </div>
     </footer>
   );

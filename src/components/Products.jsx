@@ -23,34 +23,46 @@ const Products = () => {
   const paginated = product.slice((page - 1) * perPage, page * perPage);
 
   return (
-    <section className="py-5">
-      <h1 className="text-3xl text-center font-bold mt-3 underline">
-        Our product
+    <section className="py-6 px-3 sm:px-5 md:px-8">
+      <h1 className="text-2xl sm:text-3xl text-center font-bold mt-3">
+        Our Products
       </h1>
 
-      <div className="max-w-[1320px] mx-auto mt-5">
+      <div className="max-w-7xl mx-auto mt-6">
         <div
           ref={gridRef}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
+          className="
+        grid 
+        grid-cols-2 
+        sm:grid-cols-2 
+        md:grid-cols-3 
+        lg:grid-cols-4 
+        xl:grid-cols-5 
+        gap-4 sm:gap-5 md:gap-6
+      "
         >
           {paginated.map((items) => (
-            <ProductList key={items.id} data={items} />
+            <div key={items.id} className="w-full">
+              <ProductList data={items} />
+            </div>
           ))}
         </div>
 
-        <Pagination
-          currentPage={page}
-          totalPages={Math.ceil(product.length / perPage)}
-          totalItems={product.length}
-          perPage={perPage}
-          onPageChange={(p) => {
-            setPage(p);
-            gridRef.current?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }}
-        />
+        <div className="mt-8">
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil(product.length / perPage)}
+            totalItems={product.length}
+            perPage={perPage}
+            onPageChange={(p) => {
+              setPage(p);
+              gridRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }}
+          />
+        </div>
       </div>
     </section>
   );

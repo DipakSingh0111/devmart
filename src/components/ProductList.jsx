@@ -43,26 +43,26 @@ const ProductList = ({ data }) => {
   return (
     <div
       onClick={handleProductClick}
-      className="group relative cursor-pointer bg-white rounded-2xl border border-gray-100 hover:border-gray-300 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col"
+      className="group cursor-pointer bg-white rounded-2xl border border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden"
     >
-      {/* Discount Badge */}
-      <span className="absolute top-3 left-3 z-10 bg-emerald-500 text-white text-[11px] font-semibold px-2 py-0.5 rounded-full tracking-wide">
-        {discount}% OFF
-      </span>
+      {/* Image Section */}
+      <div className="relative h-48 bg-gray-50 flex items-center justify-center">
+        {/* Discount badge */}
+        <span className="absolute top-3 left-3 bg-black text-white text-[11px] px-2 py-0.5 rounded-full font-medium">
+          {discount}% OFF
+        </span>
 
-      {/* Image */}
-      <div className="relative w-full h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
         <img
           src={thumbnail}
           alt={title}
-          className="h-full w-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+          className="h-full object-contain p-4 group-hover:scale-110 transition duration-300"
         />
       </div>
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-4 gap-2">
         {/* Title */}
-        <h2 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug">
+        <h2 className="text-sm font-medium text-gray-800 line-clamp-2 min-h-[40px]">
           {title}
         </h2>
 
@@ -72,11 +72,9 @@ const ProductList = ({ data }) => {
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
-                xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
-                fill={i < fullStars ? "#f59e0b" : "none"}
-                stroke="#f59e0b"
-                strokeWidth={1.5}
+                fill={i < fullStars ? "#facc15" : "none"}
+                stroke="#facc15"
                 className="w-3.5 h-3.5"
               >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.285-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.299-3.957z" />
@@ -87,7 +85,7 @@ const ProductList = ({ data }) => {
         </div>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-gray-900">
             ₹{price.toLocaleString("en-IN")}
           </span>
@@ -96,52 +94,44 @@ const ProductList = ({ data }) => {
           </span>
         </div>
 
-        {/* Deal tag */}
-        <p className="text-[11px] text-emerald-600 font-medium">
+        {/* Deal */}
+        <p className="text-xs text-green-600 font-medium">
           Limited time deal 🔥
         </p>
 
-        {/* Spacer */}
         <div className="flex-1" />
 
         {/* Buttons */}
-        <div
-          className="mt-2 flex items-center gap-2"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="flex gap-2 mt-3" onClick={(e) => e.stopPropagation()}>
           {cartItem ? (
-            /* Qty Controller */
-            <div className="flex items-center gap-2 flex-1 justify-center bg-gray-50 border border-gray-200 rounded-xl py-1.5 px-3">
+            <div className="flex items-center justify-between flex-1 border rounded-lg px-2 py-1">
               <button
                 onClick={() => dispatch(removeFromCart({ id }))}
-                className="w-6 h-6 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200 transition text-base font-bold"
+                className="px-2 text-lg"
               >
                 −
               </button>
-              <span className="text-sm font-semibold text-gray-800 min-w-[20px] text-center">
-                {cartItem.qty}
-              </span>
-              <button
-                onClick={addToCartHandler}
-                className="w-6 h-6 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200 transition text-base font-bold"
-              >
+
+              <span className="text-sm font-semibold">{cartItem.qty}</span>
+
+              <button onClick={addToCartHandler} className="px-2 text-lg">
                 +
               </button>
             </div>
           ) : (
             <button
               onClick={addToCartHandler}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-medium py-2 rounded-xl transition-all duration-150"
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-2 rounded-lg transition"
             >
-              Add to Cart
+              Add
             </button>
           )}
 
           <button
             onClick={handleBuyNow}
-            className="flex-1 bg-gray-900 hover:bg-gray-700 active:scale-95 text-white text-sm font-medium py-2 rounded-xl transition-all duration-150"
+            className="flex-1 bg-gray-900 hover:bg-gray-700 text-white text-sm py-2 rounded-lg transition"
           >
-            Buy Now
+            Buy
           </button>
         </div>
       </div>
