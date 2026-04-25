@@ -80,7 +80,7 @@ const OurLatestCreations = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
         {products.map((item) => {
           const oldPrice = Math.round(
             item.price / (1 - item.discountPercentage / 100),
